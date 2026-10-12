@@ -15,3 +15,14 @@ Detectar nuevas normas del MINSA publicadas en [busquedas.elperuano.pe](https://
 - Ejecución automática con GitHub Actions
 
 ## Estructura del proyecto
+
+## Instalación
+
+```bash
+git clone https://github.com/4-4-1941/Notificaciones-El-Peruano-Diario-.git
+cd Notificaciones-El-Peruano-Diario-
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+pip install -r requirements.txt
+cp config.example.yaml config.yaml
+cp .env.example .env
