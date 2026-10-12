@@ -104,4 +104,31 @@ class Storage:
         historial.extend(nuevas)
 
         with open(JSON_FILE, "w", encoding="utf-8") as f:
-            json
+            json.dump(historial, f, ensure_ascii=False, indent=2)
+
+    def marcar_notificado(self, op: str):
+        """Marca una norma como ya notificada."""
+        with sqlite3.connect(DB_FILE) as conn:
+            conn.execute(
+                "UPDATE normas SET notificado = 1 WHERE op = ?", (op,)
+            )
+            conn.commit()
+
+    def obtener_pendientes_notificacion(self) -> List[Dict]:
+        """Devuelve las normas que aún no han sido notificadas."""
+        with sqlite3.connect(DB_FILE) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.execute(
+                "SELECT * FROM normas WHERE notificado = 0 ORDER BY fecha_deteccion DESC"
+            )
+            return [dict(row) for row in cursor.fetchall()]
+
+    def obtener_ultimas(self, limite: int = 20) -> List[Dict]:
+        """Devuelve las últimas normas registradas."""
+        with sqlite3.connect(DB_FILE) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.execute(
+                "SELECT * FROM normas ORDER BY fecha_deteccion DESC LIMIT ?",
+                (limite,),
+            )
+            return [dict(row) for row in cursor.fetchall()]
